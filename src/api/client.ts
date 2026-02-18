@@ -14,7 +14,7 @@ export function setStoredToken(token: string): void {
   localStorage.setItem(tokenKey, token)
 }
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || '/api'
+const baseURL = 'http://163.61.91.103:32013/api'
 
 export const apiClient = axios.create({
   baseURL,

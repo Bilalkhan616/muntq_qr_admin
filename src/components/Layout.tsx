@@ -9,7 +9,7 @@ export function Layout() {
   })
 
   const handleToggle = () => {
-    setCollapsed((prev) => {
+    setCollapsed((prev: any) => {
       const next = !prev
       localStorage.setItem('sidebar-collapsed', JSON.stringify(next))
       return next
