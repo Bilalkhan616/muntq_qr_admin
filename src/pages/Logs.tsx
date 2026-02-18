@@ -1,7 +1,11 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getUsersWithScans } from '../api/logs'
+import { UserScansModal } from '../components/UserScansModal'
+import type { UserWithScans } from '../types/api'
 
 export function Logs() {
+  const [selectedUser, setSelectedUser] = useState<UserWithScans | null>(null)
   const { data, isLoading, error } = useQuery({
     queryKey: ['logs', 'users-with-scans'],
     queryFn: () => getUsersWithScans(),
@@ -71,7 +75,19 @@ export function Logs() {
             </thead>
             <tbody className="divide-y divide-slate-200 bg-white">
               {users.map((user) => (
-                <tr key={user.id} className="hover:bg-slate-50">
+                <tr
+                  key={user.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setSelectedUser(user)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setSelectedUser(user)
+                    }
+                  }}
+                  className="cursor-pointer hover:bg-slate-50"
+                >
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-900">
                     {user.firstName} {user.lastName}
                   </td>
@@ -93,6 +109,10 @@ export function Logs() {
           </table>
         )}
       </div>
+
+      {selectedUser && (
+        <UserScansModal user={selectedUser} onClose={() => setSelectedUser(null)} />
+      )}
     </div>
   )
 }

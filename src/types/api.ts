@@ -91,3 +91,40 @@ export interface UsersWithScansResponse {
   message: string
   users: UserWithScans[]
 }
+
+export interface ScanLogUser {
+  id: number
+  firstName: string
+  lastName: string
+  email: string
+}
+
+export interface ScanLogEntry {
+  id: number
+  userId: number
+  user: ScanLogUser
+  deliveryNo: string
+  documentType: string
+  status: 'success' | 'failed'
+  sapMessage: string
+  createdAt: string
+}
+
+export interface ScanLogsResponse {
+  success: boolean
+  status: number
+  message: string
+  logs: ScanLogEntry[]
+  pagination: {
+    total: number
+    limit: number
+    offset: number
+  }
+}
+
+export interface GetScansParams {
+  userId: number
+  status?: 'success' | 'failed'
+  limit?: number
+  offset?: number
+}

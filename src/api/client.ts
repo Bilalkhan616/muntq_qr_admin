@@ -15,6 +15,7 @@ export function setStoredToken(token: string): void {
 }
 
 const baseURL = 'http://163.61.91.103:32013/api'
+// const baseURL = 'http://192.168.2.233:3002/api'
 
 export const apiClient = axios.create({
   baseURL,
@@ -36,7 +37,9 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       clearStoredToken()
-      window.location.href = '/login'
+      if (!window.location.pathname.startsWith('/login')) {
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }

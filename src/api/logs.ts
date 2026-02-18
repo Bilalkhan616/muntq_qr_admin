@@ -1,5 +1,10 @@
 import { apiClient } from './client'
-import type { LogsResponse, UsersWithScansResponse } from '../types/api'
+import type {
+  GetScansParams,
+  LogsResponse,
+  ScanLogsResponse,
+  UsersWithScansResponse,
+} from '../types/api'
 
 export interface GetLogsParams {
   page?: number
@@ -14,5 +19,10 @@ export async function getLogs(params?: GetLogsParams): Promise<LogsResponse> {
 
 export async function getUsersWithScans(): Promise<UsersWithScansResponse> {
   const { data } = await apiClient.get<UsersWithScansResponse>('/logs/users-with-scans')
+  return data
+}
+
+export async function getScans(params: GetScansParams): Promise<ScanLogsResponse> {
+  const { data } = await apiClient.get<ScanLogsResponse>('/logs/scans', { params })
   return data
 }
