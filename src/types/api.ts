@@ -128,3 +128,27 @@ export interface GetScansParams {
   limit?: number
   offset?: number
 }
+
+export interface UpdateProfileRequest {
+  firstName?: string
+  lastName?: string
+  currentPassword?: string
+  password?: string
+}
+
+export interface AdminUpdateProfileRequest {
+  userId: number
+  firstName: string
+  lastName: string
+}
+
+export interface AdminResetPasswordRequest {
+  userId: number
+  newPassword: string
+}
+
+export interface UserProfileResponse {
+  success: true
+  message: string
+  data: { user: { id: number; email: string; firstName: string; lastName: string; role?: string } }
+}

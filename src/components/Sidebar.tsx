@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { Home, UserPlus, ScrollText, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { Home, UserPlus, Users, ScrollText, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import logoImg from '../assets/mataq.png'
 import { Can } from '../lib/ability'
 import { useAuthStore } from '../store/authStore'
@@ -24,6 +24,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const navItems = [
     { to: '/dashboard', icon: Home, label: 'Home', subject: 'Dashboard' as const },
     { to: '/dashboard/register', icon: UserPlus, label: 'Register', subject: 'User' as const },
+    { to: '/dashboard/users', icon: Users, label: 'Users', subject: 'User' as const },
     { to: '/dashboard/logs', icon: ScrollText, label: 'Logs', subject: 'Logs' as const },
   ]
 
@@ -61,7 +62,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
         <nav className="flex-1 space-y-1 p-4">
           {navItems.map(({ to, icon: Icon, label, subject }) => {
-            const action = subject === 'User' ? 'create' : 'read'
+            const action = to === '/dashboard/register' ? 'create' : 'read'
             return (
               <Can key={to} I={action} a={subject}>
                 <NavLink

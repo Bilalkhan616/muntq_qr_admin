@@ -25,9 +25,10 @@ function permissionKeysToRules(permissions: Permission[]) {
     rules.push({ action: 'create', subject: 'User' })
   }
 
-  // log.user_log, log.scan_log → read Logs
+  // log.user_log, log.scan_log → read Logs and read User (Users table)
   if (keys.has('log.user_log') || keys.has('log.scan_log')) {
     rules.push({ action: 'read', subject: 'Logs' })
+    rules.push({ action: 'read', subject: 'User' })
   }
 
   // role.manage → manage Role
