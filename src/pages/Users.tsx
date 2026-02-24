@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getUsersWithScans } from '../api/logs'
 import { EditUserModal } from '../components/EditUserModal'
 import { ResetPasswordModal } from '../components/ResetPasswordModal'
-import { MoreHorizontal, Pencil, KeyRound } from 'lucide-react'
+import { MoreHorizontal, KeyRound } from 'lucide-react'
 import type { UserWithScans } from '../types/api'
 
 function UserActionPopover({
@@ -43,7 +43,6 @@ function UserActionPopover({
 
 function UserActionsCell({
   user,
-  onEditProfile,
   onResetPassword,
 }: {
   user: UserWithScans
