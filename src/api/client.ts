@@ -14,8 +14,9 @@ export function setStoredToken(token: string): void {
   localStorage.setItem(tokenKey, token)
 }
 
-const baseURL = 'http://163.61.91.103:32013/api'
-// const baseURL = 'http://192.168.1.103:3002/api'
+const baseURL = 'http://10.60.10.49:32013/api' // production
+// const baseURL = 'http://163.61.91.103:32013/api' // staging
+// const baseURL = 'http://192.168.1.103:3002/api' // local
 
 export const apiClient = axios.create({
   baseURL,
