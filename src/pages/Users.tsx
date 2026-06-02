@@ -4,7 +4,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getUsersWithScans } from '../api/logs'
 import { EditUserModal } from '../components/EditUserModal'
 import { ResetPasswordModal } from '../components/ResetPasswordModal'
-import { MoreHorizontal, KeyRound } from 'lucide-react'
+import {
+  LockUserConfirmModal,
+  type LockConfirmMode,
+} from '../components/LockUserConfirmModal'
+import { MoreHorizontal, KeyRound, Lock, Unlock } from 'lucide-react'
 import type { UserWithScans } from '../types/api'
 
 function UserActionPopover({
@@ -44,10 +48,14 @@ function UserActionPopover({
 function UserActionsCell({
   user,
   onResetPassword,
+  onLockUser,
+  onUnlockUser,
 }: {
   user: UserWithScans
   onEditProfile: (user: UserWithScans) => void
   onResetPassword: (user: UserWithScans) => void
+  onLockUser: (user: UserWithScans) => void
+  onUnlockUser: (user: UserWithScans) => void
 }) {
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -77,7 +85,9 @@ function UserActionsCell({
           e.stopPropagation()
           setOpen((prev) => !prev)
         }}
-        className="inline-flex rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
+        className={`inline-flex rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-700 ${
+          !user.isActive ? 'text-slate-400' : 'text-slate-500'
+        }`}
         aria-label="Actions"
       >
         <MoreHorizontal className="h-5 w-5" />
@@ -105,6 +115,31 @@ function UserActionsCell({
           <KeyRound className="h-4 w-4" />
           Reset password
         </button>
+        {user.isActive ? (
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false)
+              onLockUser(user)
+            }}
+            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+          >
+            <Lock className="h-4 w-4" />
+            Lock user
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false)
+              onUnlockUser(user)
+            }}
+            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-green-600 hover:bg-green-50"
+          >
+            <Unlock className="h-4 w-4" />
+            Unlock user
+          </button>
+        )}
       </UserActionPopover>
     </div>
   )
@@ -113,6 +148,10 @@ function UserActionsCell({
 export function Users() {
   const [userToEdit, setUserToEdit] = useState<UserWithScans | null>(null)
   const [userToResetPassword, setUserToResetPassword] = useState<UserWithScans | null>(null)
+  const [lockConfirm, setLockConfirm] = useState<{
+    user: UserWithScans
+    mode: LockConfirmMode
+  } | null>(null)
   const queryClient = useQueryClient()
 
   const { data, isLoading, error } = useQuery({
@@ -156,11 +195,12 @@ export function Users() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        {users.length === 0 ? (
-          <div className="p-12 text-center text-slate-500">No users found.</div>
-        ) : (
-          <table className="min-w-full divide-y divide-slate-200">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+          {users.length === 0 ? (
+            <div className="p-12 text-center text-slate-500">No users found.</div>
+          ) : (
+            <table className="min-w-full divide-y divide-slate-200">
             <thead className="bg-slate-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
@@ -172,6 +212,9 @@ export function Users() {
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
                   Email
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                  Status
+                </th>
                 <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
                   Actions
                 </th>
@@ -179,19 +222,33 @@ export function Users() {
             </thead>
             <tbody className="divide-y divide-slate-200 bg-white">
               {users.map((user) => (
-                <tr key={user.id} className="hover:bg-slate-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-900">{user.id}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-900">
+                <tr
+                  key={user.id}
+                  className={`transition-colors hover:bg-slate-50 ${
+                    !user.isActive ? 'bg-slate-100 text-slate-400' : ''
+                  }`}
+                >
+                  <td className={`whitespace-nowrap px-6 py-4 text-sm ${!user.isActive ? 'text-slate-400' : 'text-slate-900'}`}>{user.id}</td>
+                  <td className={`whitespace-nowrap px-6 py-4 text-sm ${!user.isActive ? 'text-slate-400' : 'text-slate-900'}`}>
                     {user.firstName} {user.lastName}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-600">
+                  <td className={`whitespace-nowrap px-6 py-4 text-sm ${!user.isActive ? 'text-slate-400' : 'text-slate-600'}`}>
                     {user.email}
+                  </td>
+                  <td className="whitespace-nowrap px-6 py-4 text-sm">
+                    {user.isActive ? (
+                      <Unlock className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Lock className="h-4 w-4 text-red-600" />
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-right">
                     <UserActionsCell
                       user={user}
                       onEditProfile={setUserToEdit}
                       onResetPassword={setUserToResetPassword}
+                      onLockUser={(u) => setLockConfirm({ user: u, mode: 'lock' })}
+                      onUnlockUser={(u) => setLockConfirm({ user: u, mode: 'unlock' })}
                     />
                   </td>
                 </tr>
@@ -199,6 +256,7 @@ export function Users() {
             </tbody>
           </table>
         )}
+        </div>
       </div>
 
       {userToEdit && (
@@ -212,6 +270,14 @@ export function Users() {
         <ResetPasswordModal
           user={userToResetPassword}
           onClose={() => setUserToResetPassword(null)}
+          onSuccess={() => queryClient.invalidateQueries({ queryKey: ['logs', 'users-with-scans'] })}
+        />
+      )}
+      {lockConfirm && (
+        <LockUserConfirmModal
+          user={lockConfirm.user}
+          mode={lockConfirm.mode}
+          onClose={() => setLockConfirm(null)}
           onSuccess={() => queryClient.invalidateQueries({ queryKey: ['logs', 'users-with-scans'] })}
         />
       )}

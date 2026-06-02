@@ -45,3 +45,13 @@ export async function adminResetPassword(
   )
   return data
 }
+
+export async function adminLockUser(userId: number): Promise<unknown> {
+  const { data } = await apiClient.post(`/auth/admin/users/${userId}/lock`)
+  return data
+}
+
+export async function adminUnlockUser(userId: number): Promise<unknown> {
+  const { data } = await apiClient.post(`/auth/admin/users/${userId}/unlock`)
+  return data
+}

@@ -84,6 +84,7 @@ export interface UserWithScans {
   totalDocuments: number
   successCount: number
   failedCount: number
+  isActive: boolean
 }
 
 export interface UsersWithScansResponse {

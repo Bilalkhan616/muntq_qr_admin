@@ -39,7 +39,7 @@ export function UserScansModal({ user, onClose }: UserScansModalProps) {
       role="presentation"
     >
       <div
-        className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl"
+        className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -62,7 +62,7 @@ export function UserScansModal({ user, onClose }: UserScansModalProps) {
           </button>
         </div>
 
-        <div className="space-y-4 p-6">
+        <div className="flex-1 overflow-y-auto space-y-4 p-6">
           <div className="flex flex-wrap items-center gap-3">
             <label className="flex items-center gap-2 text-sm text-slate-600">
               Status:
@@ -99,7 +99,7 @@ export function UserScansModal({ user, onClose }: UserScansModalProps) {
             <>
               <div className="overflow-x-auto rounded-lg border border-slate-200">
                 <table className="min-w-full divide-y divide-slate-200">
-                  <thead className="bg-slate-50">
+                  <thead className="sticky top-0 z-10 bg-slate-50">
                     <tr>
                       <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
                         Delivery No

@@ -47,13 +47,14 @@ export function Logs() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        {users.length === 0 ? (
-          <div className="p-12 text-center text-slate-500">
-            No users with scans found.
-          </div>
-        ) : (
-          <table className="min-w-full divide-y divide-slate-200">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+          {users.length === 0 ? (
+            <div className="p-12 text-center text-slate-500">
+              No users with scans found.
+            </div>
+          ) : (
+            <table className="min-w-full divide-y divide-slate-200">
             <thead className="bg-slate-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
@@ -108,6 +109,7 @@ export function Logs() {
             </tbody>
           </table>
         )}
+        </div>
       </div>
 
       {selectedUser && (
