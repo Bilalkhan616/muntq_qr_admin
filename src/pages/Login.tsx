@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { login as apiLogin } from '../api/auth'
@@ -17,22 +16,18 @@ function getErrorMessage(err: unknown): string {
 }
 
 export function Login() {
-  const navigate = useNavigate()
-  const location = useLocation()
   const { setAuth } = useAuthStore()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/dashboard'
-
   const loginMutation = useMutation({
     mutationFn: () => apiLogin({ email, password }),
     onSuccess: (data) => {
       toast.success(data.message ?? 'Signed in successfully')
       setAuth(data)
-      navigate(from, { replace: true })
+      window.location.href = '/dashboard'
     },
     onError: (err) => {
       toast.error(getErrorMessage(err))
