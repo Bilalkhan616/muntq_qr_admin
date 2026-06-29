@@ -5,7 +5,7 @@ import { login as apiLogin } from '../api/auth'
 import { useAuthStore } from '../store/authStore'
 import { Eye, EyeOff } from 'lucide-react'
 import { HexGridBackground } from '../components/HexGridBackground'
-import logoImg from '../assets/mataq.png'
+import logoImg from '../assets/logo-color.svg'
 
 function getErrorMessage(err: unknown): string {
   if (err && typeof err === 'object' && 'response' in err) {
@@ -74,7 +74,7 @@ export function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
-                className="mt-2 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
+                className="mt-2 block w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
                 placeholder="you@example.com"
               />
             </div>
@@ -92,7 +92,7 @@ export function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="block w-full rounded-lg border border-slate-300 px-4 py-3 pr-11 text-slate-900 placeholder-slate-400 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
+                  className="block w-full rounded-lg border border-slate-300 px-4 py-2 pr-11 text-slate-900 placeholder-slate-400 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
                 />
                 <button
                   type="button"
@@ -111,7 +111,7 @@ export function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-lg bg-accent-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 disabled:opacity-50"
+              className="w-full rounded-lg bg-[#4F98F1] px-4 py-3 font-semibold text-white transition-colors hover:bg-[#3d87e0] focus:outline-none focus:ring-2 focus:ring-[#4F98F1] focus:ring-offset-2 disabled:opacity-50"
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
