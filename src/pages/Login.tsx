@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { login as apiLogin } from '../api/auth'
 import { useAuthStore } from '../store/authStore'
+import { Eye, EyeOff } from 'lucide-react'
 import { HexGridBackground } from '../components/HexGridBackground'
-import logoImg from '../assets/mataq.png'
+import logoImg from '../assets/logo-color.svg'
 
 function getErrorMessage(err: unknown): string {
   if (err && typeof err === 'object' && 'response' in err) {
@@ -16,21 +16,18 @@ function getErrorMessage(err: unknown): string {
 }
 
 export function Login() {
-  const navigate = useNavigate()
-  const location = useLocation()
   const { setAuth } = useAuthStore()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/dashboard'
+  const [showPassword, setShowPassword] = useState(false)
 
   const loginMutation = useMutation({
     mutationFn: () => apiLogin({ email, password }),
     onSuccess: (data) => {
       toast.success(data.message ?? 'Signed in successfully')
       setAuth(data)
-      navigate(from, { replace: true })
+      window.location.href = '/dashboard'
     },
     onError: (err) => {
       toast.error(getErrorMessage(err))
@@ -77,7 +74,7 @@ export function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
-                className="mt-2 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
+                className="mt-2 block w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 placeholder-slate-400 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
                 placeholder="you@example.com"
               />
             </div>
@@ -86,21 +83,35 @@ export function Login() {
               <label htmlFor="password" className="block text-sm font-medium text-slate-700">
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                placeholder='********'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-                className="mt-2 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
-              />
+              <div className="relative mt-2">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="********"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  className="block w-full rounded-lg border border-slate-300 px-4 py-2 pr-11 text-slate-900 placeholder-slate-400 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 transition-colors hover:text-slate-600 focus:outline-none"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-lg bg-accent-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 disabled:opacity-50"
+              className="w-full rounded-lg bg-[#4F98F1] px-4 py-3 font-semibold text-white transition-colors hover:bg-[#3d87e0] focus:outline-none focus:ring-2 focus:ring-[#4F98F1] focus:ring-offset-2 disabled:opacity-50"
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </button>

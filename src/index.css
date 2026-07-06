@@ -13,4 +13,8 @@
   --color-accent-700: #4338ca;
   --color-accent-800: #3730a3;
   --color-accent-900: #312e81;
+  --color-drawer: #0B1F3B;
+  --color-drawer-elevated: #0d2137;
+  --color-drawer-active: #4da3ff;
+  --color-drawer-logout: #e63946;
 }

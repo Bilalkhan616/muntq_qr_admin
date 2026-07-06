@@ -43,7 +43,7 @@ export const HexGridBackground = memo(function HexGridBackground() {
           value: 150,
           density: { enable: true, width: 1920, height: 1080 },
         },
-        color: { value: '#FF0000' },
+        color: { value: '#0B1F3B' },
         shape: { type: 'circle' },
         opacity: {
           value: { min: 0.15, max: 0.4 },
@@ -54,7 +54,7 @@ export const HexGridBackground = memo(function HexGridBackground() {
         links: {
           enable: true,
           distance: 140,
-          color: '#FF0000',
+          color: '#0B1F3B',
           opacity: 0.12,
           width: 1,
         },

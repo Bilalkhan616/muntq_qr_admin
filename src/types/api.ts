@@ -1,7 +1,38 @@
 export interface Permission {
+  id?: number
   key: string
   mainTag: string
   subTag: string
+  description?: string
+}
+
+export interface AdminUser {
+  id: number
+  email: string
+  firstName: string
+  lastName: string
+  isActive: boolean
+  role: string
+  createdAt?: string
+}
+
+export interface AdminUsersResponse {
+  success: boolean
+  message: string
+  users: AdminUser[]
+}
+
+export interface MobilePermissionsResponse {
+  success: boolean
+  message: string
+  permissions: Permission[]
+}
+
+export interface UserPermissionsResponse {
+  success: boolean
+  message: string
+  user: AdminUser
+  permissions: Permission[]
 }
 
 export interface User {
@@ -84,6 +115,7 @@ export interface UserWithScans {
   totalDocuments: number
   successCount: number
   failedCount: number
+  isActive: boolean
 }
 
 export interface UsersWithScansResponse {

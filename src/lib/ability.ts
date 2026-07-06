@@ -36,6 +36,12 @@ function permissionKeysToRules(permissions: Permission[]) {
     rules.push({ action: 'manage', subject: 'Role' })
   }
 
+  // auth.manageUserPermissions → read/update Role (mobile permissions admin)
+  if (keys.has('auth.manageUserPermissions')) {
+    rules.push({ action: 'read', subject: 'Role' })
+    rules.push({ action: 'update', subject: 'Role' })
+  }
+
   // scan.submit → manage Scan
   if (keys.has('scan.submit')) {
     rules.push({ action: 'manage', subject: 'Scan' })

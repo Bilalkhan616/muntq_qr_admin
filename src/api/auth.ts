@@ -7,6 +7,9 @@ import type {
   AdminUpdateProfileRequest,
   AdminResetPasswordRequest,
   UserProfileResponse,
+  AdminUsersResponse,
+  MobilePermissionsResponse,
+  UserPermissionsResponse,
 } from '../types/api'
 
 export async function login(credentials: LoginCredentials): Promise<AuthResponse> {
@@ -42,6 +45,44 @@ export async function adminResetPassword(
   const { data } = await apiClient.post<UserProfileResponse>(
     '/auth/admin/reset-password',
     payload
+  )
+  return data
+}
+
+export async function adminLockUser(userId: number): Promise<unknown> {
+  const { data } = await apiClient.post(`/auth/admin/users/${userId}/lock`)
+  return data
+}
+
+export async function adminUnlockUser(userId: number): Promise<unknown> {
+  const { data } = await apiClient.post(`/auth/admin/users/${userId}/unlock`)
+  return data
+}
+
+export async function getMobileUsers(): Promise<AdminUsersResponse> {
+  const { data } = await apiClient.get<AdminUsersResponse>('/auth/admin/users')
+  return data
+}
+
+export async function getMobilePermissions(): Promise<MobilePermissionsResponse> {
+  const { data } = await apiClient.get<MobilePermissionsResponse>('/auth/admin/mobile-permissions')
+  return data
+}
+
+export async function getUserPermissions(userId: number): Promise<UserPermissionsResponse> {
+  const { data } = await apiClient.get<UserPermissionsResponse>(
+    `/auth/admin/users/${userId}/permissions`
+  )
+  return data
+}
+
+export async function setUserPermissions(
+  userId: number,
+  permissionIds: number[]
+): Promise<UserPermissionsResponse> {
+  const { data } = await apiClient.put<UserPermissionsResponse>(
+    `/auth/admin/users/${userId}/permissions`,
+    { permissionIds }
   )
   return data
 }

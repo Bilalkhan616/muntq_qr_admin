@@ -9,6 +9,7 @@ import { Home } from './pages/Home'
 import { Register } from './pages/Register'
 import { Logs } from './pages/Logs'
 import { Users } from './pages/Users'
+import { Roles } from './pages/Roles'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,17 +28,17 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
-            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Layout />
               </ProtectedRoute>
             }
           >
-            <Route index element={<Home />} />
-            <Route path="register" element={<Register />} />
-            <Route path="users" element={<Users />} />
-            <Route path="logs" element={<Logs />} />
+            <Route path="/dashboard" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/logs" element={<Logs />} />
+            <Route path="/roles" element={<Roles />} />
           </Route>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
