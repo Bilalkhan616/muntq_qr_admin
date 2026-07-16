@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
@@ -44,6 +44,8 @@ export function Roles() {
   const queryClient = useQueryClient()
   const [selectedUserId, setSelectedUserId] = useState<number | ''>('')
   const [checkedIds, setCheckedIds] = useState<number[]>([])
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+  const userDropdownRef = useRef<HTMLDivElement>(null)
 
   const { data: usersData, isLoading: usersLoading, error: usersError } = useQuery({
     queryKey: ['mobile-users'],
@@ -84,6 +86,27 @@ export function Roles() {
     if (!userPermissionsData) return
     setCheckedIds(userPermissionsData.permissions.map((p) => p.id!).filter(Boolean))
   }, [userPermissionsData])
+
+  useEffect(() => {
+    if (!userDropdownOpen) return
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!userDropdownRef.current?.contains(event.target as Node)) {
+        setUserDropdownOpen(false)
+      }
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setUserDropdownOpen(false)
+    }
+
+    document.addEventListener('mousedown', handlePointerDown)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [userDropdownOpen])
 
   const saveMutation = useMutation({
     mutationFn: () => {
@@ -154,24 +177,70 @@ export function Roles() {
             <label htmlFor="user" className="block text-sm font-medium text-slate-700">
               User
             </label>
-            <select
-              id="user"
-              value={selectedUserId}
-              onChange={(e) => {
-                const value = e.target.value
-                setSelectedUserId(value === '' ? '' : Number(value))
-                setCheckedIds([])
-              }}
-              className="mt-2 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
-            >
-              <option value="">Select a user</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.firstName} {user.lastName} ({user.email})
-                </option>
-              ))}
-            </select>
-            {users.length === 0 && (
+            <div ref={userDropdownRef} className="relative mt-2">
+              <button
+                id="user"
+                type="button"
+                aria-haspopup="listbox"
+                aria-expanded={userDropdownOpen}
+                onClick={() => setUserDropdownOpen((open) => !open)}
+                className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-4 py-3 text-left text-slate-900 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
+              >
+                <span className={selectedUser ? 'text-slate-900' : 'text-slate-500'}>
+                  {selectedUser
+                    ? `${selectedUser.firstName} ${selectedUser.lastName} (${selectedUser.email})`
+                    : 'Select a user'}
+                </span>
+                <svg
+                  className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${userDropdownOpen ? 'rotate-180' : ''}`}
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+
+              {userDropdownOpen && (
+                <ul
+                  role="listbox"
+                  aria-labelledby="user"
+                  className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-slate-300 bg-white py-1 shadow-lg"
+                >
+                  {users.length === 0 ? (
+                    <li className="px-4 py-3 text-sm text-slate-500">No users found.</li>
+                  ) : (
+                    users.map((user) => {
+                      const isSelected = user.id === selectedUserId
+                      return (
+                        <li key={user.id} role="option" aria-selected={isSelected}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedUserId(user.id)
+                              setCheckedIds([])
+                              setUserDropdownOpen(false)
+                            }}
+                            className={`block w-full px-4 py-2.5 text-left text-sm transition-colors hover:bg-slate-50 ${
+                              isSelected
+                                ? 'bg-accent-50 font-medium text-accent-700'
+                                : 'text-slate-900'
+                            }`}
+                          >
+                            {user.firstName} {user.lastName} ({user.email})
+                          </button>
+                        </li>
+                      )
+                    })
+                  )}
+                </ul>
+              )}
+            </div>
+            {users.length === 0 && !userDropdownOpen && (
               <p className="mt-2 text-sm text-slate-500">No users found.</p>
             )}
           </div>
